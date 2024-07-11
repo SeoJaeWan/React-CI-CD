@@ -1,6 +1,9 @@
 name: project-merge-actions-feature
 run-name: Project Merge Feature
-on: [pull_request]
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
 jobs:
   merge:
     name: "Feature Auto Merge"
@@ -60,10 +63,10 @@ jobs:
                 const FEATURE = "feat/"
 
                 const { repository: {pullRequests: {edges: list}}} = await github.graphql(query, variables)
-                for(let { node } of list) {
-                    if(!node.headRefName.includes(FEATURE)) continue;
+                for (let { node } of list) {
+                    if (!node.headRefName.includes(FEATURE)) continue;
                     try { 
-                        if(node.mergeable === "CONFLICTING") {
+                        if (node.mergeable === "CONFLICTING") {
                             console.log(`Requesting changes for PR: ${node.number} by ${node.author.login}`);
                             await github.issues.createComment({
                                 owner: context.repo.owner,
@@ -71,7 +74,7 @@ jobs:
                                 issue_number: node.number,
                                 body: "이 PR에 충돌이 발생했습니다. 충돌을 해결해주세요."
                             });
-                        } else if(node.mergeable === "MERGEABLE") {
+                        } else if (node.mergeable === "MERGEABLE") {
                             console.log(`Merging PR: ${node.number} by ${node.author.login}`);
                             await github.pulls.merge({
                                 owner: context.repo.owner,
