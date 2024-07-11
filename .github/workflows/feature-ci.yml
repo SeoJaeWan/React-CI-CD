@@ -2,11 +2,14 @@ name: project-merge-actions-feature
 run-name: Project Merge Feature
 on:
   pull_request:
-    types: [opened]
+    types: [opened, synchronize, reopened]
+  check_suite:
+    types: [completed]
+  workflow_dispatch: # This allows manual triggering of the workflow
 
 jobs:
   merge:
-    name: "Feature Auto Merge on Every 10h"
+    name: "Feature Auto Merge"
     runs-on: "ubuntu-latest"
 
     strategy:
@@ -63,8 +66,6 @@ jobs:
                 const FEATURE = "feat/"
 
                 const { repository: {pullRequests: {edges: list}}} = await github.graphql(query, variables)
-                let unknownMergeablePRs = [];
-
                 for(let { node } of list) {
                     if(!node.headRefName.includes(FEATURE)) continue;
                     try { 
@@ -86,15 +87,10 @@ jobs:
                             });
                         } else {
                             console.log(`Mergeable status unknown for PR: ${node.number}. Adding to retry list.`);
-                            unknownMergeablePRs.push(node.number);
                         }
                     } catch (e) {
                         console.log(`Error handling PR ${node.number}`, e);
                     }
-                }
-                if (unknownMergeablePRs.length > 0) {
-                    console.log(`Retrying unknown mergeable PRs: ${unknownMergeablePRs.join(', ')}`);
-                    // Retry logic here (e.g., scheduling another run, or a delay and then recheck)
                 }
             } catch (error) {
                 console.log("Error fetching PRs:", error)
