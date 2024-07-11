@@ -1,0 +1,101 @@
+name: project-merge-actions-feature
+run-name: Project Merge Feature
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  merge:
+    name: "Feature Auto Merge on Every FriDay 10h"
+    runs-on: "ubuntu-latest"
+
+    strategy:
+      matrix:
+        node-version: ["18.x"]
+
+    steps:
+      - name: "Check for GitHub Token"
+        run: |
+          if [ -z "${{ secrets.ACTION_TOKEN }}" ]; then
+            echo "GitHub token is missing"
+            exit 1
+          else
+            echo "GitHub token is present"
+          fi
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: "Feature Merge"
+        uses: "actions/github-script@v3"
+        with:
+          github-token: ${{ secrets.ACTION_TOKEN }}
+          script: |
+            try {
+                const query = `query($owner:String!, $name:String!) {
+                    repository(owner: $owner, name: $name) {
+                        pullRequests(last: 100, states: OPEN) {
+                            edges {
+                                node {
+                                    number
+                                    headRefName
+                                    baseRefName
+                                    author {
+                                        login
+                                    }
+                                    repository {
+                                        name
+                                    }
+                                    mergeable
+                                }
+                            }
+                        }
+                    }
+                }`
+
+                const variables = {
+                    owner: context.repo.owner,
+                    name: context.repo.repo
+                }
+
+                const FEATURE = "feat/"
+
+                const { repository: {pullRequests: {edges: list}}} = await github.graphql(query, variables)
+                let unknownMergeablePRs = [];
+
+                for(let { node } of list) {
+                    if(!node.headRefName.includes(FEATURE)) continue;
+                    try { 
+                        if(node.mergeable === "CONFLICTING") {
+                            console.log(`Requesting changes for PR: ${node.number} by ${node.author.login}`);
+                            await github.pulls.createReview({
+                                owner: context.repo.owner,
+                                repo: context.repo.repo,
+                                pull_number: node.number,
+                                body: "충돌이 발생했습니다.",
+                                event: "REQUEST_CHANGES"
+                            });
+                        } else if(node.mergeable === "MERGEABLE") {
+                            console.log(`Merging PR: ${node.number} by ${node.author.login}`);
+                            await github.pulls.merge({
+                                owner: context.repo.owner,
+                                repo: context.repo.repo,
+                                pull_number: node.number,
+                            });
+                        } else {
+                            console.log(`Mergeable status unknown for PR: ${node.number}. Adding to retry list.`);
+                            unknownMergeablePRs.push(node.number);
+                        }
+                    } catch (e) {
+                        console.log(`Error handling PR ${node.number}`, e);
+                    }
+                }
+                if (unknownMergeablePRs.length > 0) {
+                    console.log(`Retrying unknown mergeable PRs: ${unknownMergeablePRs.join(', ')}`);
+                    // Retry logic here (e.g., scheduling another run, or a delay and then recheck)
+                }
+            } catch (error) {
+                console.log("Error fetching PRs:", error)
+            }
