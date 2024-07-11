@@ -2,8 +2,7 @@ name: "project-pull-request-check"
 run-name: Project PR Check
 on:
   pull_request_target:
-    branches:
-      - "feat/**"
+    branches: [develop]
 
 jobs:
   merge:
