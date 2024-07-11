@@ -76,7 +76,7 @@ jobs:
                                 repo: context.repo.repo,
                                 issue_number: node.number,
                                 body: "이 PR에 충돌이 발생했습니다. 충돌을 해결해주세요."
-                              });
+                            });
                         } else if(node.mergeable === "MERGEABLE") {
                             console.log(`Merging PR: ${node.number} by ${node.author.login}`);
                             await github.pulls.merge({
@@ -84,9 +84,7 @@ jobs:
                                 repo: context.repo.repo,
                                 pull_number: node.number,
                             });
-                        } else {
-                            console.log(`Mergeable status unknown for PR: ${node.number}. Adding to retry list.`);
-                        }
+                        } 
                     } catch (e) {
                         console.log(`Error handling PR ${node.number}`, e);
                     }
