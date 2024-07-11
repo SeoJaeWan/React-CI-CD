@@ -1,8 +1,8 @@
 name: project-merge-actions-feature
 run-name: Project Merge Feature
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
+  schedule:
+    - cron: "0 10 * * *"
 
 jobs:
   merge:
