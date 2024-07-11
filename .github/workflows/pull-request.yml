@@ -1,0 +1,56 @@
+name: "project-pull-request-check"
+run-name: Project PR Check
+on:
+  pull_request_target:
+    branches:
+      - "feat/**"
+
+jobs:
+  merge:
+    name: "test"
+    runs-on: "ubuntu-latest"
+
+    strategy:
+      matrix:
+        node-version: ["18.x"]
+
+    steps:
+      - name: "Check for GitHub Token"
+        run: |
+          if [ -z "${{ secrets.ACTION_TOKEN }}" ]; then
+            echo "GitHub token is missing"
+            exit 1
+          else
+            echo "GitHub token is present"
+          fi
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }} & Caching
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{matrix.node-version}}
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Run Test
+        id: test
+        run: yarn test
+
+      - name: test step has failed
+        if: ${{ steps.test.conclusion == 'failure'}}
+        uses: "actions/github-script@v3"
+        with:
+          github-token: ${{ secrets.ACTION_TOKEN }}
+          script: |
+            await github.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.sha,
+              state: "failure",
+              context: 'project-pull-request-check',
+              description: "테스트를 통과하지 못했습니다. 재검토 부탁드립니다."
+            });
