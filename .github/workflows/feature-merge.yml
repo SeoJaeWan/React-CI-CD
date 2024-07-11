@@ -2,7 +2,7 @@ name: project-merge-actions-feature
 run-name: Project Merge Feature
 on:
   schedule:
-    - cron: "0 10 * * *"
+    - cron: "0 10 * * 1-5"
 
 jobs:
   merge:
