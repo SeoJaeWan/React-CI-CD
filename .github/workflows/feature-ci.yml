@@ -6,7 +6,7 @@ on:
 
 jobs:
   merge:
-    name: "Feature Auto Merge on Every FriDay 10h"
+    name: "Feature Auto Merge on Every 10h"
     runs-on: "ubuntu-latest"
 
     strategy:
