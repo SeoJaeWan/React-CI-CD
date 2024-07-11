@@ -69,6 +69,7 @@ jobs:
                 for(let { node } of list) {
                     if(!node.headRefName.includes(FEATURE)) continue;
                     try { 
+                        console.log(node.mergeable)
                         if(node.mergeable === "CONFLICTING") {
                             console.log(`Requesting changes for PR: ${node.number} by ${node.author.login}`);
                             await github.pulls.createReview({
