@@ -1,12 +1,6 @@
 name: project-merge-actions-feature
 run-name: Project Merge Feature
-on:
-  pull_request:
-    types: [opened, synchronize, reopened]
-  check_suite:
-    types: [completed]
-  workflow_dispatch: # This allows manual triggering of the workflow
-
+on: [pull_request]
 jobs:
   merge:
     name: "Feature Auto Merge"
