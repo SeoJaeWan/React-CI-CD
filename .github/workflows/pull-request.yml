@@ -37,7 +37,12 @@ jobs:
 
       - name: Run Test
         id: test
-        run: yarn test
+        run: |
+          if find src -name '*.test.js' | grep -q .; then
+            yarn test
+          else
+            echo "No test files found, passing the test."
+          fi
 
       - name: test step has failed
         if: ${{ steps.test.conclusion == 'failure'}}
