@@ -38,12 +38,7 @@ jobs:
       - name: Run Test
         id: test
         run: |
-          test_files=$(find src -name '*.test.js')
-          if [ -n "$test_files" ]; then
-            yarn test
-          else
-            echo "No test files found, passing the test."
-          fi
+          yarn test
 
       - name: test step has failed
         if: ${{ steps.test.conclusion == 'failure'}}
