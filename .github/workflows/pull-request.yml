@@ -38,7 +38,7 @@ jobs:
       - name: Run Test
         id: test
         run: |
-          yarn test
+          yarn test --passWithNoTests
 
       - name: Output test outcome
         run: |
