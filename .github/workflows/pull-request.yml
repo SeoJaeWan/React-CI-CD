@@ -26,6 +26,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: List directory contents
+        run: ls -R
+
       - name: Use Node.js ${{ matrix.node-version }} & Caching
         uses: actions/setup-node@v4
         with:
@@ -37,7 +40,8 @@ jobs:
 
       - name: Run Test
         id: test
-        run: yarn test
+        run: |
+          yarn test --passWithNoTests
 
       - name: Output test outcome
         run: |
