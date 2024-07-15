@@ -6,7 +6,7 @@ on:
 
 jobs:
   merge:
-    name: "test"
+    name: "Pull Request Check Test"
     runs-on: "ubuntu-latest"
 
     strategy:
