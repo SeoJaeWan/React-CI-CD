@@ -41,8 +41,8 @@ jobs:
           yarn test
 
       - name: Test step has failed
-        if: ${{ steps.test.conclusion == 'failure'}}
-        uses: "actions/github-script@v3"
+        if: ${{ steps.test.outcome == 'failure' }}
+        uses: "actions/github-script@v6"
         with:
           github-token: ${{ secrets.ACTION_TOKEN }}
           script: |
