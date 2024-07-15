@@ -40,7 +40,7 @@ jobs:
         run: |
           yarn test
 
-      - name: test step has failed
+      - name: Test step has failed
         if: ${{ steps.test.conclusion == 'failure'}}
         uses: "actions/github-script@v3"
         with:
