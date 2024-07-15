@@ -40,6 +40,14 @@ jobs:
         run: |
           yarn test
 
+      - name: Output test outcome
+        run: |
+          echo "Test outcome: ${{ steps.test.outcome }}"
+
+      - name: Output test conclusion
+        run: |
+          echo "Test conclusion: ${{ steps.test.conclusion }}"
+
       - name: Test step has failed
         if: ${{ steps.test.outcome == 'failure' }}
         uses: "actions/github-script@v6"
