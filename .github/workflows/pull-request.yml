@@ -45,14 +45,18 @@ jobs:
         id: test
         run: yarn test --detectOpenHandles --passWithNoTests
 
+      - name: Output test conclusion
+        if: ${{ failure() && steps.test.conclusion  == 'failure' }}
+        run: |
+          echo "Test conclusion: ${{ steps.test.conclusion }}"
+
       - name: Test step has failed
         if: ${{ failure() && steps.test.conclusion  == 'failure' }}
         uses: "actions/github-script@v6"
         with:
           github-token: ${{ secrets.ACTION_TOKEN }}
           script: |
-            console.log(steps.test.conclusion)
-            console.log(failure());
+            console.log(github.repos)
             await github.repos.createCommitStatus({
               owner: context.repo.owner,
               repo: context.repo.repo,
