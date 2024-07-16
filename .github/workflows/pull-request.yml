@@ -36,7 +36,7 @@ jobs:
           cache: "yarn"
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install
 
       - name: Install missing babel plugin
         run: yarn add @babel/plugin-proposal-private-property-in-object --dev
