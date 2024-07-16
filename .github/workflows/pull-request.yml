@@ -46,7 +46,7 @@ jobs:
         run: yarn test --detectOpenHandles --passWithNoTests
 
       - name: Test step has failed
-        if: ${{ steps.test.conclusion  == 'failure' }}
+        if: ${{ failure() && steps.test.conclusion  == 'failure' }}
         uses: "actions/github-script@v6"
         with:
           github-token: ${{ secrets.ACTION_TOKEN }}
