@@ -23,9 +23,6 @@ jobs:
             echo "GitHub token is present"
           fi
 
-      - name: Checkout
-        uses: actions/checkout@v4
-
       - name: List directory contents
         run: ls -R
 
