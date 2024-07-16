@@ -29,9 +29,6 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
 
-      - name: List directory contents
-        run: ls -R
-
       - name: Use Node.js ${{ matrix.node-version }} & Caching
         uses: actions/setup-node@v4
         with:
@@ -46,7 +43,7 @@ jobs:
 
       - name: Run Test
         id: test
-        run: yarn test --passWithNoTests
+        run: yarn test --detectOpenHandles --passWithNoTests
 
       - name: Test step has failed
         if: ${{ steps.test.conclusion  == 'failure' }}
