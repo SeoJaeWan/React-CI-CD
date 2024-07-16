@@ -51,6 +51,8 @@ jobs:
         with:
           github-token: ${{ secrets.ACTION_TOKEN }}
           script: |
+            console.log(steps.test.conclusion)
+            console.log(failure());
             await github.repos.createCommitStatus({
               owner: context.repo.owner,
               repo: context.repo.repo,
