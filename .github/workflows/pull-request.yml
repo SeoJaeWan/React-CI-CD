@@ -64,3 +64,9 @@ jobs:
               context: 'project-pull-request-check',
               description: "테스트를 통과하지 못했습니다. 재검토 부탁드립니다."
             });
+            await github.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: node.number,
+                body: "테스트를 통과하지 못했습니다. 재검토 부탁드립니다."
+            });
