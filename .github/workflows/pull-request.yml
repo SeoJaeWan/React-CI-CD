@@ -43,7 +43,7 @@ jobs:
 
       - name: Run Test
         id: test
-        run: yarn test
+        run: yarn test --detectOpenHandles
 
       - name: Test step has failed
         if: ${{ steps.test.conclusion  == 'failure' }}
