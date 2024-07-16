@@ -45,11 +45,6 @@ jobs:
         id: test
         run: yarn test --detectOpenHandles --passWithNoTests
 
-      - name: Output test conclusion
-        if: ${{ failure() && steps.test.conclusion  == 'failure' }}
-        run: |
-          echo "Test conclusion: ${{ steps.test.conclusion }}"
-
       - name: Test step has failed
         if: ${{ failure() && steps.test.conclusion  == 'failure' }}
         uses: "actions/github-script@v3"
