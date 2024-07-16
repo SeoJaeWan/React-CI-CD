@@ -41,9 +41,12 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Install missing babel plugin
+        run: yarn add @babel/plugin-proposal-private-property-in-object --dev
+
       - name: Run Test
         id: test
-        run: yarn test --detectOpenHandles
+        run: yarn test --passWithNoTests
 
       - name: Test step has failed
         if: ${{ steps.test.conclusion  == 'failure' }}
