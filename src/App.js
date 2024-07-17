@@ -19,7 +19,9 @@ function App() {
         <div>
           <h1>텍스트</h1>
         </div>
-        <div></div>
+        <div>
+          <p>텍스트</p>
+        </div>
       </div>
     </div>
   );
