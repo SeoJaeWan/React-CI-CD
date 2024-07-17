@@ -207,7 +207,7 @@ jobs:
             const { repo, payload } = context;
 
             // 현재 PR에 달린 모든 Comment 리스트를 가져옴
-            const { data: previousComments } = await github.issues.listComments({
+            const { data: previousComments } = await github.rest.issues.listComments({
               owner: repo.owner,
               repo: repo.repo,
               issue_number: payload.pull_request.number,
@@ -222,7 +222,7 @@ jobs:
             // Lighthouse 측정 결과를 기록한 Comment가 이미 존재할 경우
             if (previousLhciComment) {
               // 기존의 Comment를 수정
-              await github.issues.updateComment({
+              await github.rest.issues.updateComment({
                 owner: repo.owner,
                 repo: repo.repo,
                 comment_id: previousLhciComment.id, // 수정할 Comment의 id
@@ -230,7 +230,7 @@ jobs:
               });
             } else { // Lighthouse 측정 결과를 기록한 Comment가 존재하지 않을 경우
               // 새로운 Comment 생성
-              await github.issues.createComment({
+              await github.rest.issues.createComment({
                 owner: repo.owner,
                 repo: repo.repo,
                 issue_number: payload.pull_request.number, // Comment를 작성할 PR 번호
