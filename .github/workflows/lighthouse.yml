@@ -249,8 +249,8 @@ jobs:
             const updateGoogleSheet = async () => {
               // 서비스 계정의 비공개 키 정보를 담는 객체 생성
               const creds = {
-                client_email: `${{ secrets.GOOGLE_CLIENT_EMAIL }}`, # secrets에 저장한 GOOGLE_CLIENT_EMAIL 값 사용
-                private_key: `${{ secrets.GOOGLE_PRIVATE_KEY }}`, # secrets에 저장한 GOOGLE_PRIVATE_KEY 값 사용
+                client_email: `${{ secrets.GOOGLE_CLIENT_EMAIL }}`, // secrets에 저장한 GOOGLE_CLIENT_EMAIL 값 사용
+                private_key: `${{ secrets.GOOGLE_PRIVATE_KEY }}`, // secrets에 저장한 GOOGLE_PRIVATE_KEY 값 사용
               };
 
               // Format lighthouse score 단계에서 내보냈던 scores 값을 desktop과 mobile에 구조 분해 할당
