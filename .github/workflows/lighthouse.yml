@@ -75,7 +75,7 @@ jobs:
         # Lighthouse 결과를 PR Comment에 작성할 형식대로 포맷팅
       - name: Format lighthouse score
         id: format_lighthouse_score
-        uses: actions/github-script@v3
+        uses: actions/github-script@v5
         with:
           script: |
             // Lighthouse 측정 결과 파일을 읽어오기 위해 'fs' import
@@ -194,7 +194,7 @@ jobs:
             core.setOutput('scores', scores);
 
       - name: Comment PR
-        uses: actions/github-script@v3
+        uses: actions/github-script@v5
         with:
           # GITHUB_TOKEN은 GitHub Actions 워크플로우에서 자동으로 생성되고 제공되는 암호화된 토큰
           # Actions secrets에 자동으로 포함되므로 사용자가 명시적으로 설정하지 않아도 됨
@@ -239,7 +239,7 @@ jobs:
             }
 
       - name: Update Google SpreadSheet
-        uses: actions/github-script@v3
+        uses: actions/github-script@v5
         with:
           script: |
             // Google Spreadhsheet API를 이용하여 Google Spreadsheet의 데이터를 쉽게 읽고 쓰고 수정할 수 있도록 도와주는 라이브러리
