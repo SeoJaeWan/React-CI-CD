@@ -203,10 +203,6 @@ jobs:
           github-token: ${{ secrets.ACTION_TOKEN }}
           script: |
             const fs = require('fs');
-            # GitHub의 REST API와 상호 작용하기 위한 라이브러리
-            # GitHub 레포지토리, 이슈, PR, 사용자 정보 등 다양한 데이터를 쉽게 조회하고 조작할 수 있음
-            const { Octokit } = require('@octokit/rest');
-            const octokit = new Octokit({ auth: `${{ secrets.ACTION_TOKEN }}` });
 
             # context 객체는 @actions/github 패키지에서 제공하는 것으로, 워크플로우 실행 중 현재 컨텍스트에 대한 정보를 담고 있음
             # repo를 통해 현재 레포지토리에 대한 정보를 가져올 수 있음
@@ -214,7 +210,7 @@ jobs:
             const { repo, payload } = context;
 
             # 현재 PR에 달린 모든 Comment 리스트를 가져옴
-            const { data: previousComments } = await octokit.issues.listComments({
+            const { data: previousComments } = await github.issues.listComments({
               owner: repo.owner,
               repo: repo.repo,
               issue_number: payload.pull_request.number,
@@ -229,7 +225,7 @@ jobs:
             # Lighthouse 측정 결과를 기록한 Comment가 이미 존재할 경우
             if (previousLhciComment) {
               # 기존의 Comment를 수정
-              await octokit.issues.updateComment({
+              await github.issues.updateComment({
                 owner: repo.owner,
                 repo: repo.repo,
                 comment_id: previousLHCIComment.id, # 수정할 Comment의 id
@@ -237,7 +233,7 @@ jobs:
               });
             } else { # Lighthouse 측정 결과를 기록한 Comment가 존재하지 않을 경우
               # 새로운 Comment 생성
-              await octokit.issues.createComment({
+              await github.issues.createComment({
                 owner: repo.owner,
                 repo: repo.repo,
                 issue_number: payload.pull_request.number, # Comment를 작성할 PR 번호
