@@ -29,6 +29,9 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Install missing babel plugin
+        run: yarn add @babel/plugin-proposal-private-property-in-object --dev
+
       - name: Run Build
         run:
           yarn build
