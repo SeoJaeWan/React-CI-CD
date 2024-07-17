@@ -65,49 +65,266 @@ jobs:
 
           # Lighthouse 결과를 PR Comment에 작성할 형식대로 포맷팅
 
-    #   - name: Format lighthouse score
-    #     id: format_lighthouse_score
-    #     uses: actions/github-script@v7
-    #     with:
-    #       script: |
-    #         // Lighthouse 측정 결과 파일을 읽어오기 위해 'fs' import
-    #         const fs = require('fs');
-    #         const { getLhciPageNameFromUrl, LHCI_GREEN_MIN_SCORE, LHCI_ORANGE_MIN_SCORE, LHCI_RED_MIN_SCORE } = require('./src/configs/lighthouse/Lighthouse.js');
+      - name: Format lighthouse score
+        id: format_lighthouse_score
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Lighthouse 측정 결과 파일을 읽어오기 위해 'fs' import
+            const fs = require('fs');
+            const { getLhciPageNameFromUrl, LHCI_GREEN_MIN_SCORE, LHCI_ORANGE_MIN_SCORE, LHCI_RED_MIN_SCORE } = require('./src/configs/lighthouse/constant.js');
 
-    #         // 점수를 받아서 해당 점수의 색상을 리턴해주는 함수
-    #         const getColor = (score) => {
-    #           if (score >= LHCI_GREEN_MIN_SCORE) return '🟢';
-    #           else if (score >= LHCI_ORANGE_MIN_SCORE) return '🟠';
-    #           return '🔴';
-    #         }
+            // 점수를 받아서 해당 점수의 색상을 리턴해주는 함수
+            const getColor = (score) => {
+              if (score >= LHCI_GREEN_MIN_SCORE) return '🟢';
+              else if (score >= LHCI_ORANGE_MIN_SCORE) return '🟠';
+              return '🔴';
+            }
 
-    #         // 점수를 받아서 색상 + 점수를 리턴해주는 함수들
-    #         // Performance, Accessibility, Best Practices, SEO, PWA에 적용됨
-    #         const getAuditColorAndScore = (score) => getColor(score) + score;
+            // 점수를 받아서 색상 + 점수를 리턴해주는 함수들
+            // Performance, Accessibility, Best Practices, SEO, PWA에 적용됨
+            const getAuditColorAndScore = (score) => getColor(score) + score;
 
-    #         // Performance 하위 지표인 FCP, LCP, Speed Index, TBT, CLS에 적용됨
-    #         const getPerformanceMetricColorAndScore = (category) => getColor(category.score * 100) + category.displayValue;
+            // Performance 하위 지표인 FCP, LCP, Speed Index, TBT, CLS에 적용됨
+            const getPerformanceMetricColorAndScore = (category) => getColor(category.score * 100) + category.displayValue;
 
-    #         // 점수는 0-1의 숫자로 표현되기 때문에 100을 곱해주는 함수 필요
-    #         const formatResult = (res) => Math.round(res * 100);
+            // 점수는 0-1의 숫자로 표현되기 때문에 100을 곱해주는 함수 필요
+            const formatResult = (res) => Math.round(res * 100);
 
-    #         // Lighthouse 결과가 저장된 파일에서 내용을 읽어옴
-    #         // path는 '{Github Actions 러너의 기본 디렉토리}/{GitHub Actions가 클론한 레포지토리가 위치한 경로}/{GitHub Actions 워크플로우에서 접근하려는 실제 파일 경로}'
-    #         const desktopResults = JSON.parse(fs.readFileSync(''));
-    #         const mobileResults = JSON.parse(fs.readFileSync(''));
+            // Lighthouse 결과가 저장된 파일에서 내용을 읽어옴
+            // path는 '{Github Actions 러너의 기본 디렉토리}/{GitHub Actions가 클론한 레포지토리가 위치한 경로}/{GitHub Actions 워크플로우에서 접근하려는 실제 파일 경로}'
+            const desktopResults = JSON.parse(fs.readFileSync('/home/runner/work/React-CI-CD/React-CI-CD/lhci_reports/desktop/manifest.json'));
+            const mobileResults = JSON.parse(fs.readFileSync('/home/runner/work/React-CI-CD/React-CI-CD/lhci_reports/mobile/manifest.json'));
 
-    #         // Lighthouse를 측정한 시간 (Google Spreadsheet 기록 용도)
-    #         const monitoringTime = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
+            // Lighthouse를 측정한 시간 (Google Spreadsheet 기록 용도)
+            const monitoringTime = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
 
-    #         // PR Comment에 작성될 색상별 점수 기준
-    #         const scoreDescription = `> 🟢: ${LHCI_GREEN_MIN_SCORE} - 100` + ' / ' + `🟠: ${LHCI_ORANGE_MIN_SCORE} - ${LHCI_GREEN_MIN_SCORE - 1}` + ' / ' + `🔴: ${LHCI_RED_MIN_SCORE} - ${LHCI_ORANGE_MIN_SCORE - 1}`;
+            // PR Comment에 작성될 색상별 점수 기준
+            const scoreDescription = `> 🟢: ${LHCI_GREEN_MIN_SCORE} - 100` + ' / ' + `🟠: ${LHCI_ORANGE_MIN_SCORE} - ${LHCI_GREEN_MIN_SCORE - 1}` + ' / ' + `🔴: ${LHCI_RED_MIN_SCORE} - ${LHCI_ORANGE_MIN_SCORE - 1}`;
 
-    #         // PR Comment에 작성될 comments 변수
-    #         let comments = '';
+            // PR Comment에 작성될 comments 변수
+            let comments = '';
 
-    #         // comments에 Comment 제목과 점수 기준 추가
-    #         comments += `### Lighthouse report ✨\n`;
-    #         comments += `${scoreDescription}\n\n`;
+            // comments에 Comment 제목과 점수 기준 추가
+            comments += `### Lighthouse report ✨\n`;
+            comments += `${scoreDescription}\n\n`;
 
-    #         // Google SpreadSheet에 기록될 scores 객체
-    #         const scores = { desktop: {}, mobile: {} };
+            // Google SpreadSheet에 기록될 scores 객체
+            const scores = { desktop: {}, mobile: {} };
+
+            // Lighthouse 측정 결과에서 각 점수를 추출해내는 함수
+            const extractLhciResults = (results, device) => {
+              // 소제목으로 mobile인지 desktop인지 작성
+              comments += `#### ${device}\n\n`;
+
+              results.forEach((result) => {
+                // url, summary, jsonPath, audits 추출
+                const { url, summary, jsonPath } = result;
+                const { audits } = JSON.parse(fs.readFileSync(jsonPath));
+
+                // pageUrl에서 'http://localhost:3000' 부분 제거 
+                const pageUrl = url.replace('http://localhost:3000', '');
+                // pageUrl을 이용해서 pageName 추출
+                const pageName = getLhciPageNameFromUrl(pageUrl);
+
+                // summary 내의 모든 점수에 100을 곱함 (0-1 사이의 수로 표현되기 때문)
+                Object.keys(summary).forEach((key) => (summary[key] = formatResult(summary[key])));
+
+                // summary에서 점수 추출
+                const { performance, accessibility, 'best-practices': bestPractices, seo, pwa } = summary;
+                // audits에서 점수 추출 (Performace 하위 지표들)
+                const { 'first-contentful-paint': firstContentfulPaint, 'largest-contentful-paint': largestContentfulPaint, 'speed-index': speedIndex, 'total-blocking-time': totalBlockingTime, 'cumulative-layout-shift': cumulativeLayoutShift } = audits;
+
+                // PR Comment에 작성하기 위해 점수를 표 형태로 생성
+                const formattedScoreTable = [
+                  `| Category | Score |`,
+                  `| --- | --- |`,
+                  `| ${getColor(performance)} Performance | ${performance} |`,
+                  `| ${getColor(accessibility)} Accessibility | ${accessibility} |`,
+                  `| ${getColor(bestPractices)} Best practices | ${bestPractices} |`,
+                  `| ${getColor(seo)} SEO | ${seo} |`,
+                  `| ${getColor(pwa)} PWA | ${pwa} |`,
+                  `| ${getColor(firstContentfulPaint.score * 100)} First Contentful Paint | ${firstContentfulPaint.displayValue} |`,
+                  `| ${getColor(largestContentfulPaint.score * 100)} Largest Contentful Paint | ${largestContentfulPaint.displayValue} |`,
+                  `| ${getColor(speedIndex.score * 100)} Speed Index | ${speedIndex.displayValue} |`,
+                  `| ${getColor(totalBlockingTime.score * 100)} Total Blocking Time | ${totalBlockingTime.displayValue} |`,
+                  `| ${getColor(cumulativeLayoutShift.score * 100)} Cumulative Layout Shift | ${cumulativeLayoutShift.displayValue} |`,
+                  `\n`,
+                ].join('\n');
+
+                // 점수를 Google SpreadSheet에 기록될 형태로 정리하여 객체로 생성
+                const score = {
+                  Performance: getAuditColorAndScore(performance),
+                  Accessibility: getAuditColorAndScore(accessibility),
+                  'Best Practices': getAuditColorAndScore(bestPractices),
+                  SEO: getAuditColorAndScore(seo),
+                  PWA: getAuditColorAndScore(pwa),
+                  FCP: getPerformanceMetricColorAndScore(firstContentfulPaint),
+                  LCP: getPerformanceMetricColorAndScore(largestContentfulPaint),
+                  'Speed Index': getPerformanceMetricColorAndScore(speedIndex),
+                  'TBT': getPerformanceMetricColorAndScore(totalBlockingTime),
+                  'CLS': getPerformanceMetricColorAndScore(cumulativeLayoutShift),
+                }
+                
+                // scores['desktop']['페이지A'] 형태로 접근할 수 있도록 할당
+                scores[device][pageName] = score;
+
+                // PR Comment에 작성할 형태로 만들어 comments에 추가
+                // <details>와 <summary> 태그를 사용해 토글 형태로 생성
+                comments += `<details>\n<summary>${pageName}</summary>\n\n> ${pageUrl}\n\n${formattedScoreTable}\n</details>\n\n`;
+              });
+            } // extractLhciResults 함수 끝 
+
+            // desktop 측정 결과 포맷팅
+            extractLhciResults(desktopResults, 'desktop');
+            // mobile 측정 결과 포맷팅
+            extractLhciResults(mobileResults, 'mobile');
+
+            // comments, monitoringTime, scores 값 내보내기
+            core.setOutput('comments', comments);            
+            core.setOutput('monitoringTime', monitoringTime);
+            core.setOutput('scores', scores);
+
+      - name: Comment PR
+        uses: actions/github-script@v7
+        with:
+          # GITHUB_TOKEN은 GitHub Actions 워크플로우에서 자동으로 생성되고 제공되는 암호화된 토큰
+          # Actions secrets에 자동으로 포함되므로 사용자가 명시적으로 설정하지 않아도 됨
+          # 워크플로우 실행 중 특정 작업을 수행하는 데 필요한 권한을 제공하는 등의 경우에 사용됨
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            # GitHub의 REST API와 상호 작용하기 위한 라이브러리
+            # GitHub 레포지토리, 이슈, PR, 사용자 정보 등 다양한 데이터를 쉽게 조회하고 조작할 수 있음
+            const { Octokit } = require('@octokit/rest');
+            const octokit = new Octokit({ auth: `${{ secrets.GITHUB_TOKEN }}` });
+
+            # context 객체는 @actions/github 패키지에서 제공하는 것으로, 워크플로우 실행 중 현재 컨텍스트에 대한 정보를 담고 있음
+            # repo를 통해 현재 레포지토리에 대한 정보를 가져올 수 있음
+            # payload를 통해 이벤트의 액션, PR에 대한 정보, 이슈에 대한 정보 등을 가져올 수 있음
+            const { repo, payload } = context;
+
+            # 현재 PR에 달린 모든 Comment 리스트를 가져옴
+            const { data: previousComments } = await octokit.issues.listComments({
+              owner: repo.owner,
+              repo: repo.repo,
+              issue_number: payload.pull_request.number,
+            });
+
+            # PR에 달린 Comment 중 `### Lighthouse report ✨\n`로 시작하는 Comment를 찾아냄
+            # Lighthouse 측정 결과를 기록한 Comment를 찾아내는 것
+            const previousLhciComment = previousComments.find((comment) => (comment.body.startsWith(`### Lighthouse report ✨\n`)));
+            # Format lighthouse score 단계에서 내보냈던 comments 값을 newComment 변수에 할당
+            const newComment = `${{ steps.format_lighthouse_score.outputs.comments }}`;
+
+            # Lighthouse 측정 결과를 기록한 Comment가 이미 존재할 경우
+            if (previousLhciComment) {
+              # 기존의 Comment를 수정
+              await octokit.issues.updateComment({
+                owner: repo.owner,
+                repo: repo.repo,
+                comment_id: previousLHCIComment.id, # 수정할 Comment의 id
+                body: newComment, # Comment 내용
+              });
+            } else { # Lighthouse 측정 결과를 기록한 Comment가 존재하지 않을 경우
+              # 새로운 Comment 생성
+              await octokit.issues.createComment({
+                owner: repo.owner,
+                repo: repo.repo,
+                issue_number: payload.pull_request.number, # Comment를 작성할 PR 번호
+                body: newComment,
+              });
+            }
+
+      - name: Update Google SpreadSheet
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            # Google Spreadhsheet API를 이용하여 Google Spreadsheet의 데이터를 쉽게 읽고 쓰고 수정할 수 있도록 도와주는 라이브러리
+            const { GoogleSpreadsheet } = require('google-spreadsheet');
+            const { LHCI_GOOGLE_SPREAD_SHEET_ID, getLhciSheetIdFromPageName } = require('./src/configs/lighthouse/contant.js');
+
+            const updateGoogleSheet = async () => {
+              # 서비스 계정의 비공개 키 정보를 담는 객체 생성
+              const creds = {
+                client_email: `${{ secrets.GOOGLE_CLIENT_EMAIL }}`, # secrets에 저장한 GOOGLE_CLIENT_EMAIL 값 사용
+                private_key: `${{ secrets.GOOGLE_PRIVATE_KEY }}`, # secrets에 저장한 GOOGLE_PRIVATE_KEY 값 사용
+              };
+
+              # Format lighthouse score 단계에서 내보냈던 scores 값을 desktop과 mobile에 구조 분해 할당
+              const { desktop, mobile } = ${{ steps.format_lighthouse_score.outputs.scores }};
+              # Format lighthouse score 단계에서 내보냈던 monitoringTime 값을 monitoringTime에 할당
+              const monitoringTime = `${{ steps.format_lighthouse_score.outputs.monitoringTime }}`;
+
+              const { repo, payload } = context;
+
+              # GoogleSpreadsheet 인스턴스 생성
+              const doc = new GoogleSpreadsheet(LHCI_GOOGLE_SPREAD_SHEET_ID); 
+
+              # useServiceAccountAuth 메서드는 Google API에 접근할 수 있도록 인증 토큰 생성
+              # Google API에 인증
+              await doc.useServiceAccountAuth(creds);
+              
+              # loadInfo 메서드를 호출하면 doc 인스턴스에 해당 Spreadsheet에 대한 정보가 채워짐
+              # Spreadsheet의 메타데이터 로드
+              await doc.loadInfo();
+
+              for (const pageName in desktop) {
+                # 페이지의 시트 id
+                const sheetId = getLhciSheetIdFromPageName(pageName);
+                # 페이지의 desktop 점수
+                const desktopScore = desktop[pageName];
+                # 페이지의 mobile 점수
+                const mobileScore = mobile[pageName];
+
+                # Spreadsheet에 시트 id로 접근
+                const sheet = doc.sheetsById[sheetId];
+                # Spreadsheet의 헤더 행 (첫 번째 행) 로드
+                await sheet.loadHeaderRow();
+
+                # PR url
+                const prUrl = `https://github.com/${repo.owner}/${repo.repo}/pull/${payload.pull_request.number}`;
+                # PR 번호를 클릭하면 해당 PR로 바로 이동하도록 하이퍼링크를 걸어둠
+                # '#'은 PR 번호라는 느낌을 주기 위해 붙임, 필수 x
+                const prHyperlink = '=HYPERLINK("' + prUrl + '", "#' + payload.pull_request.number + '")';
+
+                # Spreadsheet의 모든 행을 가져옴
+                # 반환하는 값은 각 행을 나타내는 객체들의 배열
+                const rows = await sheet.getRows(); 
+                # 같은 PR 번호를 가진 행이 있는지 탐색 (해당 PR의 측정 결과가 이미 기록되어있는지 확인)
+                const previousRow = rows.find((row) => row['PR url'] === `#${payload.pull_request.number}`);
+
+                # 해당 PR의 Lighthouse 측정 결과 기록이 존재하는 경우
+                if (previousRow) { 
+                  # 기존 행의 Monitoring Time과 PR url 열에 새로운 기록을 덮어씌움
+                  previousRow['Monitoring Time'] = monitoringTime;
+                  previousRow['PR url'] = prHyperlink;
+                  # 기존 행의 점수 관련 열들에 새로운 기록을 덮어씌움
+                  Object.keys(desktopScore).forEach((key) => {
+                    previousRow[key + ' [D]'] = desktopScore[key];
+                    previousRow[key + ' [M]'] = mobileScore[key];
+                  });
+
+                  # previousRow의 변경사항을 저장
+                  await previousRow.save();
+                  continue;
+                } 
+
+                # 해당 PR의 Lighthouse 측정 결과 기록이 존재하지 않는 경우
+                # 새로운 행 데이터 생성 후 PR url과 Monitoring Time 값 추가
+                const newRow = { 'PR url': prHyperlink, 'Monitoring Time': monitoringTime };
+                # 새로운 행 데이터에 점수 관련 데이터 추가
+                Object.keys(desktopScore).forEach((key) => {
+                    newRow[key + ' [D]'] = desktopScore[key];
+                    newRow[key + ' [M]'] = mobileScore[key];
+                  });
+
+                # 새로운 행을 Spreadsheet에 추가
+                await sheet.addRow(newRow);
+              } 
+            }
+
+            # updateGoogleSheet 함수에서 에러가 발생하면 에러 메시지를 출력하고 작업을 실패로 표시함
+            updateGoogleSheet().catch(err => core.setFailed(err.message));
