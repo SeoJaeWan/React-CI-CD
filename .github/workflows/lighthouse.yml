@@ -72,8 +72,7 @@ jobs:
           lhci collect --config=lighthouserc-mobile.js || echo 'Fail to Run Lighthouse CI 💦'
           lhci upload --config=lighthouserc-mobile.js || echo 'Fail to Run Lighthouse CI 💦'
 
-          # Lighthouse 결과를 PR Comment에 작성할 형식대로 포맷팅
-
+        # Lighthouse 결과를 PR Comment에 작성할 형식대로 포맷팅
       - name: Format lighthouse score
         id: format_lighthouse_score
         uses: actions/github-script@v7
@@ -202,8 +201,6 @@ jobs:
           # 워크플로우 실행 중 특정 작업을 수행하는 데 필요한 권한을 제공하는 등의 경우에 사용됨
           github-token: ${{ secrets.ACTION_TOKEN }}
           script: |
-            const fs = require('fs');
-
             // context 객체는 @actions/github 패키지에서 제공하는 것으로, 워크플로우 실행 중 현재 컨텍스트에 대한 정보를 담고 있음
             // repo를 통해 현재 레포지토리에 대한 정보를 가져올 수 있음
             // payload를 통해 이벤트의 액션, PR에 대한 정보, 이슈에 대한 정보 등을 가져올 수 있음
@@ -228,15 +225,15 @@ jobs:
               await github.issues.updateComment({
                 owner: repo.owner,
                 repo: repo.repo,
-                comment_id: previousLhciComment.id, # 수정할 Comment의 id
-                body: newComment, # Comment 내용
+                comment_id: previousLhciComment.id, // 수정할 Comment의 id
+                body: newComment, // Comment 내용
               });
-            } else { # Lighthouse 측정 결과를 기록한 Comment가 존재하지 않을 경우
+            } else { // Lighthouse 측정 결과를 기록한 Comment가 존재하지 않을 경우
               // 새로운 Comment 생성
               await github.issues.createComment({
                 owner: repo.owner,
                 repo: repo.repo,
-                issue_number: payload.pull_request.number, # Comment를 작성할 PR 번호
+                issue_number: payload.pull_request.number, // Comment를 작성할 PR 번호
                 body: newComment,
               });
             }
@@ -245,8 +242,6 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const fs = require('fs');
-
             // Google Spreadhsheet API를 이용하여 Google Spreadsheet의 데이터를 쉽게 읽고 쓰고 수정할 수 있도록 도와주는 라이브러리
             const { GoogleSpreadsheet } = require('google-spreadsheet');
             const { LHCI_GOOGLE_SPREAD_SHEET_ID, getLhciSheetIdFromPageName } = require('./src/configs/lighthouse/contant.js');
