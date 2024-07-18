@@ -23,6 +23,14 @@ function App() {
         <img src="https://picsum.photos/4000/3000" alt="" />
       ))}
 
+      {new Array(10).fill(30).map(() => (
+        <img src="https://picsum.photos/4000/3000" alt="" />
+      ))}
+
+      {new Array(10).fill(30).map(() => (
+        <img src="https://picsum.photos/4000/3000" alt="" />
+      ))}
+
       <div>
         <div>
           <h1>텍스트</h1>
