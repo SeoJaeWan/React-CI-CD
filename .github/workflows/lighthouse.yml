@@ -84,8 +84,8 @@ jobs:
         with:
           script: |
             // Lighthouse 측정 결과 파일을 읽어오기 위해 'fs' import
-            import fs from 'fs';
-            import { getLhciPageNameFromUrl, LHCI_GREEN_MIN_SCORE, LHCI_ORANGE_MIN_SCORE, LHCI_RED_MIN_SCORE } from './src/configs/lighthouse/constant.js';
+            const fs = require('fs');
+            const { getLhciPageNameFromUrl, LHCI_GREEN_MIN_SCORE, LHCI_ORANGE_MIN_SCORE, LHCI_RED_MIN_SCORE } = require('./src/configs/lighthouse/constant.js');
 
             // 점수를 받아서 해당 점수의 색상을 리턴해주는 함수
             const getColor = (score) => {
@@ -248,9 +248,9 @@ jobs:
         with:
           script: |
             // Google Spreadhsheet API를 이용하여 Google Spreadsheet의 데이터를 쉽게 읽고 쓰고 수정할 수 있도록 도와주는 라이브러리
-            import { GoogleSpreadsheet } from 'google-spreadsheet';
-            import { JWT } from 'google-auth-library';
-            import { LHCI_GOOGLE_SPREAD_SHEET_ID, getLhciSheetIdFromPageName } from './src/configs/lighthouse/constant.js';
+            const { GoogleSpreadsheet } = require('google-spreadsheet');
+            const { JWT } = require('google-auth-library');
+            const { LHCI_GOOGLE_SPREAD_SHEET_ID, getLhciSheetIdFromPageName } = require('./src/configs/lighthouse/constant.js');
 
             const updateGoogleSheet = async () => {
               // 서비스 계정의 비공개 키 정보를 담는 객체 생성
