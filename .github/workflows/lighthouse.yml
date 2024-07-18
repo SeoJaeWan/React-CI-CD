@@ -84,8 +84,8 @@ jobs:
         with:
           script: |
             // Lighthouse 측정 결과 파일을 읽어오기 위해 'fs' import
-            const fs = require('fs');
-            const { getLhciPageNameFromUrl, LHCI_GREEN_MIN_SCORE, LHCI_ORANGE_MIN_SCORE, LHCI_RED_MIN_SCORE } = require('./src/configs/lighthouse/constant.js');
+            import fs from 'fs';
+            import { getLhciPageNameFromUrl, LHCI_GREEN_MIN_SCORE, LHCI_ORANGE_MIN_SCORE, LHCI_RED_MIN_SCORE } from './src/configs/lighthouse/constant.js';
 
             // 점수를 받아서 해당 점수의 색상을 리턴해주는 함수
             const getColor = (score) => {
@@ -119,7 +119,7 @@ jobs:
             let comments = '';
 
             // comments에 Comment 제목과 점수 기준 추가
-            comments += `### Lighthouse report ✨\n`;
+            comments += `## Lighthouse report ✨\n`;
             comments += `${scoreDescription}\n\n`;
 
             // Google SpreadSheet에 기록될 scores 객체
@@ -128,7 +128,7 @@ jobs:
             // Lighthouse 측정 결과에서 각 점수를 추출해내는 함수
             const extractLhciResults = (results, device) => {
               // 소제목으로 mobile인지 desktop인지 작성
-              comments += `#### ${device}\n\n`;
+              comments += `### ${device}\n\n`;
 
               results.forEach((result) => {
                 // url, summary, jsonPath, audits 추출
@@ -184,7 +184,7 @@ jobs:
 
                 // PR Comment에 작성할 형태로 만들어 comments에 추가
                 // <details>와 <summary> 태그를 사용해 토글 형태로 생성
-                comments += `<details>\n<summary>${pageName}</summary>\n\n> ${pageUrl}\n\n${formattedScoreTable}\n</details>\n\n`;
+                comments += `<details>\n<summary>${pageName} : ${pageUrl}</summary>\n\n${formattedScoreTable}\n</details>\n\n`;
               });
             } // extractLhciResults 함수 끝 
 
@@ -248,9 +248,9 @@ jobs:
         with:
           script: |
             // Google Spreadhsheet API를 이용하여 Google Spreadsheet의 데이터를 쉽게 읽고 쓰고 수정할 수 있도록 도와주는 라이브러리
-            const { GoogleSpreadsheet } = require('google-spreadsheet');
-            const { JWT } = require('google-auth-library');
-            const { LHCI_GOOGLE_SPREAD_SHEET_ID, getLhciSheetIdFromPageName } = require('./src/configs/lighthouse/constant.js');
+            import { GoogleSpreadsheet } from 'google-spreadsheet';
+            import { JWT } from 'google-auth-library';
+            import { LHCI_GOOGLE_SPREAD_SHEET_ID, getLhciSheetIdFromPageName } from './src/configs/lighthouse/constant.js';
 
             const updateGoogleSheet = async () => {
               // 서비스 계정의 비공개 키 정보를 담는 객체 생성
@@ -284,11 +284,12 @@ jobs:
 
                 // Spreadsheet에 시트 id로 접근
                 const sheet = doc.sheetsById[sheetId];
-                // Spreadsheet의 헤더 행 (첫 번째 행) 로드
-
+                
                 try{
+                  // Spreadsheet의 헤더 행 (첫 번째 행) 로드
                   await sheet.loadHeaderRow();
                 } catch(err) {
+                  // 없다면 새로운 행 추가
                   await sheet.setHeaderRow(['PR url', 'Monitoring Time', ...Object.keys(desktopScore).map(key => key + ' [D]'), ...Object.keys(mobileScore).map(key => key + ' [M]')]);
                  }
 
