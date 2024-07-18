@@ -249,7 +249,7 @@ jobs:
           script: |
             // Google Spreadhsheet API를 이용하여 Google Spreadsheet의 데이터를 쉽게 읽고 쓰고 수정할 수 있도록 도와주는 라이브러리
             const { GoogleSpreadsheet } = require('google-spreadsheet');
-            const { LHCI_GOOGLE_SPREAD_SHEET_ID, getLhciSheetIdFromPageName } = require('./src/configs/lighthouse/contant.js');
+            const { LHCI_GOOGLE_SPREAD_SHEET_ID, getLhciSheetIdFromPageName } = require('./src/configs/lighthouse/constant.js');
 
             const updateGoogleSheet = async () => {
               // 서비스 계정의 비공개 키 정보를 담는 객체 생성
