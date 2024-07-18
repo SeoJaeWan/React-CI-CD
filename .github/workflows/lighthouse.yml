@@ -257,6 +257,7 @@ jobs:
               const creds = new JWT({
                 email: `${{ secrets.GOOGLE_CLIENT_EMAIL }}`, // secrets에 저장한 GOOGLE_CLIENT_EMAIL 값 사용
                 key: `${{ secrets.GOOGLE_PRIVATE_KEY }}`, // secrets에 저장한 GOOGLE_PRIVATE_KEY 값 사용
+                scopes: ['https://www.googleapis.com/auth/spreadsheets']
               });
 
               // Format lighthouse score 단계에서 내보냈던 scores 값을 desktop과 mobile에 구조 분해 할당
