@@ -285,12 +285,12 @@ jobs:
                 // Spreadsheet에 시트 id로 접근
                 const sheet = doc.sheetsById[sheetId];
                 // Spreadsheet의 헤더 행 (첫 번째 행) 로드
-                await sheet.loadHeaderRow();
 
-                // 헤더 행이 비어있으면 기본 헤더 설정
-                if (!sheet.headerValues.length) {
-                  sheet.setHeaderRow(['PR url', 'Monitoring Time', ...Object.keys(desktopScore).map(key => key + ' [D]'), ...Object.keys(mobileScore).map(key => key + ' [M]')]);
-                }
+                try{
+                  await sheet.loadHeaderRow();
+                } catch(err) {
+                  await sheet.setHeaderRow(['PR url', 'Monitoring Time', ...Object.keys(desktopScore).map(key => key + ' [D]'), ...Object.keys(mobileScore).map(key => key + ' [M]')]);
+                 }
 
                 // PR url
                 const prUrl = `https://github.com/${repo.owner}/${repo.repo}/pull/${payload.pull_request.number}`;
