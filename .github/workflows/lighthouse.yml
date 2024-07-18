@@ -42,7 +42,7 @@ jobs:
         run: yarn add @babel/plugin-proposal-private-property-in-object --dev --frozen-lockfile
 
       - name: Install Lighthouse CLI
-        run: yarn add @lhci/cli -g --frozen-lockfile
+        run: yarn global add @lhci/cli --frozen-lockfile
 
       - name: Install Spreadsheet
         run: yarn add google-spreadsheet --frozen-lockfile
