@@ -268,7 +268,6 @@ jobs:
               // GoogleSpreadsheet 인스턴스 생성
               const doc = new GoogleSpreadsheet(LHCI_GOOGLE_SPREAD_SHEET_ID, creds); 
 
-
               // loadInfo 메서드를 호출하면 doc 인스턴스에 해당 Spreadsheet에 대한 정보가 채워짐
               // Spreadsheet의 메타데이터 로드
               await doc.loadInfo();
