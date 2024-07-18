@@ -287,6 +287,11 @@ jobs:
                 // Spreadsheet의 헤더 행 (첫 번째 행) 로드
                 await sheet.loadHeaderRow();
 
+                // 헤더 행이 비어있으면 기본 헤더 설정
+                if (!sheet.headerValues.length) {
+                  sheet.setHeaderRow(['PR url', 'Monitoring Time', ...Object.keys(desktopScore).map(key => key + ' [D]'), ...Object.keys(mobileScore).map(key => key + ' [M]')]);
+                }
+
                 // PR url
                 const prUrl = `https://github.com/${repo.owner}/${repo.repo}/pull/${payload.pull_request.number}`;
                 // PR 번호를 클릭하면 해당 PR로 바로 이동하도록 하이퍼링크를 걸어둠
