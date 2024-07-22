@@ -1,4 +1,5 @@
-name: Lighthouse CI
+name: lighthouse-page
+run-name: Lighthouse Page Test
 
 on:
   pull_request_target:
@@ -57,7 +58,6 @@ jobs:
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
 
-        # Lighthouse CI를 전역으로 설치
         # lighthouserc-desktop.js 설정 파일에 따라 Lighthouse 데이터 수집
         # lighthouserc-desktop.js 설정 파일에 따라 수집된 데이터 업로드
         # 실패 시 'Fail to Run Lighthouse CI 💦' 출력
